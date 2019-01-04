@@ -1,28 +1,57 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div id="app">
+        <div>
+            <label>Email</label>
+            <input type="text" v-model="user.email">
+        </div>
+        <div>
+            <label>Username</label>
+            <input type="text" v-model="user.userName">
+        </div>
+        <button @click="submit">Submit</button>
+        <hr>
+        <button @click="fetchData">Get Data</button>
+        <ul>
+            <li
+                v-for="(theUser, index) in users"
+                :key="index"
+            >{{ theUser.userName }} - {{ theUser.email }}</li>
+        </ul>
+    </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'app',
-  components: {
-    HelloWorld
-  }
-}
+    name: "app",
+    data() {
+        return {
+            user: {
+                userName: "",
+                email: ""
+            },
+            users: [],
+        };
+    },
+    methods: {
+        submit() {
+            this.$http.post("", this.user).then(
+                response => {
+                    console.log(response);
+                },
+                error => {
+                    console.log(error);
+                }
+            );
+        },
+        fetchData() {
+            this.$http.get("").then(response => {
+                const resultArray = [];
+                for (let key in response.data) {
+                    resultArray.push(response.data[key]);
+                }
+                this.users = resultArray;
+            });
+        }
+    },
+};
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
